@@ -1,5 +1,8 @@
-﻿using M5_NETCOREWEBSales.Core.Entities;
+﻿using AutoMapper;
+using M5_NETCOREWEBSales.Core.DTOs;
+using M5_NETCOREWEBSales.Core.Entities;
 using M5_NETCOREWEBSales.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,24 +12,43 @@ using System.Threading.Tasks;
 
 namespace M5_NETCOREWebSales.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IMapper _mapper;
 
-        public CustomerController(ICustomerRepository customerRepository)
+
+        public CustomerController(ICustomerRepository customerRepository, IMapper mapper)
         {
             _customerRepository = customerRepository;
+            _mapper = mapper;
         }
-
-
+        //[Authorize]
         [HttpGet]
-        [Route("GetCustomer")]
+        [Route("GetCustomer")]        
         public async Task<IActionResult> GetCustomer()
         {
             var customers = await _customerRepository.GetCustomers();
-            return Ok(customers);
+            //var customerList = new List<CustomerDTO>();
+            //foreach (var item in customers)
+            //{
+            //    var customerDTO = new CustomerDTO()
+            //    {
+            //        Id = item.Id,
+            //        FirstName = item.FirstName,
+            //        LastName = item.LastName,
+            //        City = item.City,
+            //        Country = item.Country,
+            //        Phone = item.Phone
+            //    };
+            //    customerList.Add(customerDTO);
+            //}
+            var customerList = _mapper.Map<IEnumerable<CustomerDTO>>(customers);
+
+            return Ok(customerList);
         }
 
         [HttpGet]
@@ -36,13 +58,18 @@ namespace M5_NETCOREWebSales.API.Controllers
             var customer = await _customerRepository.GetCustomerById(id);
             if (customer == null)
                 return NotFound();
-            return Ok(customer);
+
+            var customerDTO = _mapper.Map<CustomerDTO>(customer);
+            return Ok(customerDTO);
         }
 
         [HttpPost]
         [Route("PostCustomer")]
-        public async Task<IActionResult> PostCustomer(Customer customer)
+        //[AllowAnonymous]
+        public async Task<IActionResult> PostCustomer(CustomerDTO customerDTO)
         {
+            var customer = _mapper.Map<Customer>(customerDTO);
+
             await _customerRepository.InsertCustomer(customer);
             return Ok(customer);
         

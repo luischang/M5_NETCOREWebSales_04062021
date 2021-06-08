@@ -1,5 +1,6 @@
 ﻿using System;
 using M5_NETCOREWEBSales.Core.Entities;
+using M5_NETCOREWEBSales.Core.Enttites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -23,6 +24,8 @@ namespace M5_NETCOREWEBSales.Infrastructure.Data
         public virtual DbSet<OrderItem> OrderItem { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
+
+        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
