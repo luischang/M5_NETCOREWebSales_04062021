@@ -23,6 +23,8 @@ namespace M5_NETCOREWEBSales.Core.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        
+
     }
 
     public class CustomerCityDTO
@@ -30,6 +32,12 @@ namespace M5_NETCOREWEBSales.Core.DTOs
         public int Id { get; set; }
         public string City { get; set; }
 
+    }
+
+    public class CustomerOrderDTO 
+    {
+        public CustomerFullNameDTO customer { get; set; }
+        public List<OrderDTO> orders { get; set; }
     }
 
 
